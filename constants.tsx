@@ -1,13 +1,20 @@
 
 import { ResearchPaper, ReviewTimelinePoint } from './types';
 
+// ייבוא התמונות שהועלו לספרייה הראשית
+import evacuationImg from './evacuation.jpg';
+import driversImg from './drivers.jpg';
+import reviewImg from './review.jpg';
+import factoryImg from './factory.jpg';
+import floatingImg from './floating.jpg';
+
 export const RESEARCH_PAPERS: ResearchPaper[] = [
   {
     id: 'evacuation',
     year: '2021',
     title: 'פינוי תיירים אורבני',
     description: 'מסגרת עבודה מקיפה לשיפור תהליכי איסוף נתונים וניהול פינוי תיירים במרחב האורבני באמצעות חיישנים וניטור זרימה.',
-    imageUrl: 'evacuation.jpg', 
+    imageUrl: evacuationImg, 
     imagePrompt: 'A highly detailed 3D isometric technical illustration of a modern city center during an emergency evacuation. Glowing neon green arrows show optimal walking paths for tourists. Blue police icons at key intersections. Professional architectural rendering style, clean lines, high contrast.',
     icon: 'fa-map-marked-alt',
     buttonText: 'לסימולטור',
@@ -18,7 +25,7 @@ export const RESEARCH_PAPERS: ResearchPaper[] = [
     year: '2025',
     title: 'רווחת נהגי תחבורה ציבורית',
     description: 'הערכת רווחה ושביעות רצון של נהגים באמצעות שילוב נתונים פיזיולוגיים ובינה מלאכותית לחיזוי מדדי סטרס.',
-    imageUrl: 'drivers.jpg', 
+    imageUrl: driversImg, 
     imagePrompt: 'A futuristic bus driver cockpit viewed from over the shoulder. Transparent holographic HUD displays showing heart rate wave (ECG), stress level bars, and schedule delay timers. Professional industrial design aesthetic.',
     icon: 'fa-heartbeat',
     buttonText: 'לסימולטור',
@@ -29,7 +36,7 @@ export const RESEARCH_PAPERS: ResearchPaper[] = [
     year: '2022',
     title: 'ניהול תורים במיון: סקירה',
     description: 'סקירה מקיפה של 229 מאמרים לאורך 7 עשורים על גישות ניהוליות ומתודולוגיות מחקר.',
-    imageUrl: 'review.jpg', 
+    imageUrl: reviewImg, 
     imagePrompt: 'A realistic, professional photo of a modern hospital emergency room triage station. A focused triage doctor in blue scrubs and a stethoscope is evaluating a patient. High-quality clinical photography.',
     icon: 'fa-book-medical',
     buttonText: 'לסקירה המלאה',
@@ -40,7 +47,7 @@ export const RESEARCH_PAPERS: ResearchPaper[] = [
     year: '2020',
     title: 'אופטימיזציית הקצאה רב-מפעלית',
     description: 'פיתוח אלגוריתם קירוב (FPTAS) להקצאת משימות אופטימלית בין מפעל מרכזי לקבלני משנה תחת אילוצי זמן ורווח.',
-    imageUrl: 'factory.jpg', 
+    imageUrl: factoryImg, 
     imagePrompt: 'A network diagram of interconnected smart factories. Miniature 3D factories linked by glowing golden data threads. Robotic arms and assembly lines visible through windows. Industry 4.0 high-tech visualization.',
     icon: 'fa-industry',
     buttonText: 'לסימולטור',
@@ -51,7 +58,7 @@ export const RESEARCH_PAPERS: ResearchPaper[] = [
     year: '2015-2017',
     title: 'שיטת "המטופל הצף" (FP)',
     description: 'סדרת מחקרים המציגה מודל מתמטי ואלגוריתמי לאיזון עומסים בין המיון למחלקות האשפוז באמצעות אופטימיזציה וקירוב.',
-    imageUrl: 'floating.jpg', 
+    imageUrl: floatingImg, 
     imagePrompt: 'A clean medical UI dashboard in a hospital control room. On one side ED crowding metrics, on the other Inpatient Ward occupancy. A digital "Float Decision" indicator glowing green. High-tech healthcare monitoring.',
     icon: 'fa-procedures',
     buttonText: 'לסימולטור',
