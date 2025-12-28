@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ד"ר גיא וכטל | פורטל מחקר אקדמי</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ariel: {
+                            green: '#90C030',
+                            dark: '#1a1a1a',
+                            gray: '#f3f4f6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Rubik', 'sans-serif'],
+                        display: ['Heebo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8fafc; color: #1e293b; overflow-x: hidden; scroll-behavior: smooth; }
+        .ariel-dark-gradient { background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .hidden-view { display: none; }
+        .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #90C030; border-radius: 4px; }
+
+        /* Evacuation Grid 20x20 */
+        .evac-grid { display: grid; grid-template-columns: repeat(20, 1fr); gap: 1px; background: #1e293b; padding: 4px; border-radius: 8px; }
+        .evac-cell { aspect-ratio: 1; border-radius: 1px; position: relative; background: #334155; cursor: pointer; }
+        .cell-wall { background: #64748b; cursor: not-allowed; }
+        .cell-safe { background: #90C030; box-shadow: 0 0 10px rgba(144, 192, 48, 0.5); z-index: 5; }
+        .cell-police { background: #3b82f6; border: 1px solid white; box-shadow: 0 0 8px rgba(59, 130, 246, 0.6); display: flex; align-items: center; justify-content: center; color: white; font-size: 8px; z-index: 10; }
+        .tourist-dot { width: 80%; height: 80%; border-radius: 50%; position: absolute; top: 10%; left: 10%; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 15; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+        .tourist-dot.smart { background-color: #90C030 !important; border: 2px solid white; }
+        .tourist-dot.panic { background-color: #ef4444 !important; animation: pulse 0.5s infinite alternate; }
+        @keyframes pulse { from { transform: scale(0.8); } to { transform: scale(1.1); } }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans text-slate-800">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50 border-t-4 border-ariel-green">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center gap-4">
+                    <div class="flex flex-col items-start leading-tight group cursor-pointer" onclick="switchView('home')">
+                        <span class="text-2xl font-black text-gray-800 tracking-tighter group-hover:opacity-80 transition-opacity">אוניברסיטת <span class="text-ariel-green">אריאל</span></span>
+                        <span class="text-xs text-slate-500 font-medium tracking-wide">בשומרון</span>
+                    </div>
+                    <div class="hidden md:block h-8 w-px bg-slate-200 mx-2"></div>
+                    <div class="hidden md:block text-sm text-slate-600 font-medium">המחלקה להנדסת תעשייה וניהול</div>
+                </div>
+                <div class="flex items-center">
+                    <button onclick="switchView('home')" id="nav-home-btn" class="text-ariel-green font-bold transition-colors px-3 py-2 flex items-center gap-2"><i class="fas fa-home"></i> ראשי</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- VIEW 1: HOME -->
+    <div id="view-home" class="view-section fade-in-up">
+        <header class="bg-white relative overflow-hidden pb-12">
+            <div class="absolute top-0 left-0 w-full h-32 ariel-dark-gradient z-0"></div>
+            <div class="max-w-6xl mx-auto px-4 relative z-10 pt-16">
+                <div class="flex flex-col md:flex-row gap-8 items-start">
+                    <div class="w-full md:w-1/3 -mt-4">
+                        <div class="bg-white p-2 rounded-2xl shadow-xl border border-slate-100">
+                            <div class="aspect-[3/4] bg-slate-100 rounded-xl overflow-hidden relative group flex items-center justify-center">
+                                <img src="profile.jpg" onerror="this.src='https://ui-avatars.com/api/?name=Guy+Wachtel&background=1a1a1a&color=fff&size=512'" alt="ד״ר גיא וכטל" class="w-full h-full object-cover">
+                                <div class="absolute bottom-0 w-full bg-gradient-to-t from-black/80 to-transparent p-5 pt-12">
+                                    <h2 class="text-white text-2xl font-bold">ד"ר גיא וכטל</h2>
+                                    <p class="text-ariel-green font-medium text-sm">חוקר ומרצה</p>
+                                </div>
+                            </div>
+                            <div class="p-5 space-y-4">
+                                <div class="flex items-center text-slate-600 text-sm hover:text-ariel-green transition-colors">
+                                    <div class="w-8 h-8 rounded-full bg-ariel-green flex items-center justify-center text-white ml-3"><i class="fas fa-envelope"></i></div>
+                                    <span class="font-medium">GuyW@ariel.ac.il</span>
+                                </div>
+                                <div class="flex justify-center gap-4 pt-2 border-t border-slate-100 mt-2">
+                                    <a href="https://www.linkedin.com/in/guy-wachtel-9a8192a0/" target="_blank" class="text-slate-400 hover:text-ariel-green text-xl"><i class="fab fa-linkedin"></i></a>
+                                    <a href="https://scholar.google.com/citations?user=Y3hTWIMAAAAJ" target="_blank" class="text-slate-400 hover:text-ariel-green text-xl"><i class="fas fa-graduation-cap"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3 mt-4 md:mt-20">
+                        <h1 class="text-4xl font-black text-gray-800 mb-6 font-display leading-tight">חקר ביצועים, אלגוריתמים <br/><span class="text-ariel-green">ומה שביניהם</span></h1>
+                        <div class="space-y-6 text-lg text-slate-600 leading-relaxed mb-8 text-justify">
+                            <p>ד"ר גיא וכטל הוא מרצה וחוקר במחלקה להנדסת תעשייה וניהול באוניברסיטת אריאל. מחקרו מתמקד בפיתוח מודלים מתמטיים ואלגוריתמי קירוב לפתרון בעיות אופטימיזציה מורכבות (NP-hard) במערכות שירות ותעשייה.</p>
+                            <p>הוא מתמחה בשימוש בכלים של חקר ביצועים, ניהול מערכות בריאות ותחבורה חכמה לשיפור היעילות והחוסן של מערכות מורכבות. עבודותיו פורסמו בכתבי עת מדעיים מובילים והוא מציג באופן קבוע בכנסים בינלאומיים מרכזיים.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4 border-r-4 border-ariel-green pr-3">תחומי עניין ומחקר</h3>
+                            <div class="h-64 w-full"><canvas id="skillsChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="max-w-7xl mx-auto px-4 py-16 bg-slate-50 rounded-t-[3rem] -mt-8 relative z-10">
+            <h2 class="text-3xl font-black text-gray-800 mb-10 flex items-center"><i class="fas fa-flask text-ariel-green ml-3"></i> פרסומים נבחרים וסימולציות</h2>
+            <div id="papers-grid" class="flex flex-wrap justify-center gap-8">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+    </div>
+
+    <!-- VIEW: EVACUATION -->
+    <div id="view-evacuation" class="view-section hidden-view">
+        <div class="max-w-5xl mx-auto px-4 py-8">
+            <button onclick="switchView('home')" class="mb-6 flex items-center text-slate-500 hover:text-ariel-green font-bold"><i class="fas fa-arrow-right ml-2"></i> חזרה לראשי</button>
+            <header class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-ariel-green mb-8 border border-slate-100">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+                    <div class="flex-grow">
+                        <h1 class="text-3xl font-black text-gray-800 mb-2">תכנון מסלולי פינוי תיירים (2021)</h1>
+                        <p class="text-slate-500 font-medium mb-4 italic">Urban Analytics and City Science | SAGE</p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="bg-ariel-green text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md">SAGE Journals</span>
+                            <span class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold">חוסן עירוני</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center min-w-[120px]">
+                        <div class="text-[10px] text-slate-400 uppercase font-bold mb-1">שנת פרסום</div>
+                        <div class="text-2xl font-black text-slate-800">2021</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="bg-gray-900 text-white rounded-[2rem] shadow-2xl p-8 mb-12 border border-gray-800 overflow-hidden">
+                <div class="flex flex-col lg:flex-row justify-between items-center mb-10 gap-6">
+                    <h3 class="text-xl font-bold flex items-center gap-3"><i class="fas fa-map-marked-alt text-ariel-green"></i> סימולטור פינוי חכם (20x20 BFS)</h3>
+                    <div class="flex flex-wrap gap-4 bg-gray-800 p-3 rounded-2xl items-center border border-gray-700">
+                        <button onclick="togglePolicePlacing()" id="btn-police" class="px-4 py-2 text-xs rounded-xl bg-gray-700 border border-gray-600 transition-all flex items-center gap-2">
+                            <i class="fas fa-user-shield"></i> הצב שוטר (<span id="police-count">0</span>/2)
+                        </button>
+                        <button onclick="triggerEvacAlarm()" id="btn-alarm" class="px-6 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold transition-all shadow-lg flex items-center gap-2 text-sm">
+                            <i class="fas fa-bell"></i> הפעל אזעקה!
+                        </button>
+                        <button onclick="resetEvacSim()" class="px-4 py-2 rounded-xl bg-gray-700 hover:bg-gray-600 font-bold transition-all text-sm"><i class="fas fa-undo"></i> איפוס</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-12 items-center lg:items-start justify-center">
+                    <div class="w-full max-w-md">
+                        <div class="flex justify-between text-[11px] font-mono text-ariel-green mb-2 px-1">
+                            <span>מצב: <span id="evac-status-text">שיטוט רגיל</span></span>
+                            <span>צעדים: <span id="evac-steps" class="font-bold text-white">0</span></span>
+                        </div>
+                        <div id="evac-grid" class="evac-grid w-full aspect-square shadow-2xl border-4 border-slate-700"></div>
+                        <div class="mt-4 flex justify-between items-center bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                            <div class="text-[10px] text-slate-400 font-bold flex gap-4">
+                                <div class="flex items-center gap-1"><div class="w-2 h-2 bg-blue-500 rounded-full"></div> רגיל</div>
+                                <div class="flex items-center gap-1"><div class="w-2 h-2 bg-red-500 rounded-full"></div> פאניקה</div>
+                                <div class="flex items-center gap-1"><div class="w-2 h-2 bg-ariel-green border border-white rounded-full"></div> מונחה</div>
+                            </div>
+                            <div class="text-white text-xs font-mono">מפונים: <span id="evac-count" class="text-ariel-green font-black text-xl">0</span>/30</div>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/3 space-y-6">
+                        <div class="bg-gray-800/50 p-6 rounded-2xl border border-gray-700 text-right">
+                            <h4 class="text-ariel-green font-black text-xs uppercase mb-4 tracking-widest">מכניקת סימולציה (אלגוריתמית)</h4>
+                            <ul class="text-xs text-slate-300 space-y-4 leading-relaxed">
+                                <li class="flex gap-3"><i class="fas fa-brain text-ariel-green mt-1"></i> <span><strong>למידה חברתית:</strong> תייר מבולבל (אדום) שפוגש תייר מונחה (ירוק) לומד את המסלול ממנו והופך לירוק בעצמו.</span></li>
+                                <li class="flex gap-3"><i class="fas fa-route text-ariel-green mt-1"></i> <span><strong>ניתוב שוטרים:</strong> הצבת שוטר בנקודה אסטרטגית הופכת כל תייר שעובר לידו למונחה (חכם).</span></li>
+                                <li class="flex gap-3"><i class="fas fa-exclamation-triangle text-ariel-green mt-1"></i> <span><strong>פאניקה:</strong> ללא הכוונה, תיירים ינועו בצורה כאוטית ויתקעו בקירות המבנה.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-12 rounded-[2.5rem] shadow-sm border border-slate-200">
+                <h3 class="text-2xl font-black text-ariel-green mb-8 flex items-center"><i class="fas fa-file-alt ml-3"></i> תקציר המאמר וניתוח ממצאים</h3>
+                <div class="space-y-6 text-lg text-slate-700 leading-relaxed text-justify">
+                    <p>תעשיית התיירות היא אחת התעשיות הצומחות ביותר בעולם, אך בד בבד עולה הדאגה לבטיחותם של תיירים בעת אירועי חירום. תיירים נחשבים לאוכלוסייה פגיעה יותר מכיוון שהם פחות מכירים את הסביבה ואת פרוטוקולי הבטיחות.</p>
+                    <p>המחקר מציע מסגרת עבודה מקיפה לאיסוף מידע וניהול פינוי. אחד החידושים הוא שימוש בחיישני Bluetooth Low Energy (BLE) לניטור זרימה גם כשהרשתות הסלולריות קורסות. הסימולציה מדגימה כיצד הכוונה חכמה ("נקודות כחולות" - שוטרים) יכולה להפוך תייר מבולבל למונחה ולמנוע טעויות ניווט קריטיות.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW: DRIVERS -->
+    <div id="view-drivers" class="view-section hidden-view">
+        <div class="max-w-5xl mx-auto px-4 py-8">
+            <button onclick="switchView('home')" class="mb-6 flex items-center text-slate-500 hover:text-ariel-green font-bold"><i class="fas fa-arrow-right ml-2"></i> חזרה לראשי</button>
+            <header class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-ariel-green mb-8 border border-slate-100">
+                <div class="flex justify-between items-start">
+                    <div class="text-right">
+                        <h1 class="text-3xl font-black text-gray-800 mb-2">רווחת נהגי תחבורה ציבורית (2025)</h1>
+                        <p class="text-slate-500 font-medium italic">Journal of Public Transportation | Elsevier</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center min-w-[140px]">
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">טכנולוגיית ניטור</div>
+                        <div class="text-lg font-black text-slate-800 tracking-tight">Empatica E4</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="grid lg:grid-cols-3 gap-8 mb-12">
+                <div class="lg:col-span-1 bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col gap-8 text-right">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">נתונים תפעוליים</h3>
+                    <div class="space-y-10">
+                        <div>
+                            <div class="flex justify-between mb-2"><label class="text-xs font-bold text-slate-600">איחור בלוז (דקות)</label><span id="val-delay" class="text-xs font-mono font-bold text-ariel-green">10m</span></div>
+                            <input type="range" id="input-delay" min="0" max="60" value="10" oninput="updateDriverSim()" class="w-full accent-ariel-green">
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2"><label class="text-xs font-bold text-slate-600">עומס נוסעים (%)</label><span id="val-load" class="text-xs font-mono font-bold text-blue-500">40%</span></div>
+                            <input type="range" id="input-load" min="0" max="100" value="40" oninput="updateDriverSim()" class="w-full accent-blue-500">
+                        </div>
+                    </div>
+                    <div class="mt-auto p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                        <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">מדד שביעות רצון (DCM)</div>
+                        <div class="text-4xl font-black text-slate-800" id="driver-satisfaction">92%</div>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-800">
+                    <div class="flex justify-between items-center mb-10">
+                        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><i class="fas fa-circle text-[8px] text-ariel-green animate-pulse"></i> ניטור פיזיולוגי (BIOMETRIC)</h3>
+                        <div class="flex gap-8">
+                            <div class="text-right"><div class="text-[10px] text-slate-500 font-bold">HR (BPM)</div><div class="text-3xl font-mono font-bold text-ariel-green" id="driver-bpm">72</div></div>
+                            <div class="text-right"><div class="text-[10px] text-slate-500 font-bold">EDA (µS)</div><div class="text-3xl font-mono font-bold text-yellow-400" id="driver-eda">0.85</div></div>
+                        </div>
+                    </div>
+                    <div class="h-56 w-full bg-slate-950/50 rounded-2xl border border-slate-800 p-4 mb-8">
+                        <canvas id="driverChart"></canvas>
+                    </div>
+                    <div id="driver-alert" class="p-6 rounded-2xl border border-ariel-green bg-slate-950/40 flex items-center gap-6 transition-all duration-500 text-right">
+                        <div class="w-16 h-16 rounded-full flex items-center justify-center text-3xl bg-slate-900 text-ariel-green" id="driver-alert-circle">
+                            <i class="fas fa-check-circle" id="driver-alert-icon"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">המלצת מערכת תומכת החלטה</div>
+                            <div class="text-ariel-green font-black text-xl" id="driver-alert-text">סטטוס תקין: מדדים בטווח הנורמה</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW: FACTORY -->
+    <div id="view-factory" class="view-section hidden-view">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <button onclick="switchView('home')" class="mb-6 flex items-center text-slate-500 hover:text-ariel-green font-bold"><i class="fas fa-arrow-right ml-2"></i> חזרה לראשי</button>
+            <header class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-ariel-green mb-8 border border-slate-100">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-6 text-right">
+                    <div class="flex-grow">
+                        <h1 class="text-3xl font-black text-gray-800 mb-2">אופטימיזציית הקצאה רב-מפעלית (2020)</h1>
+                        <p class="text-slate-500 font-medium italic">Journal of Industrial and Production Engineering</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center min-w-[160px]">
+                        <div class="text-[10px] text-slate-400 uppercase font-bold mb-1 tracking-widest text-center">מורכבות חישובית</div>
+                        <div class="text-2xl font-black text-ariel-green tracking-tight">O(n³/ε)</div>
+                        <div class="text-[9px] text-slate-400 mt-1 italic text-center">Polynomial Approximation</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="bg-slate-900 text-white rounded-[2.5rem] p-8 mb-12 shadow-2xl border border-slate-800 relative overflow-hidden">
+                <div class="flex flex-col lg:flex-row justify-between items-center mb-10 gap-8">
+                    <h3 class="text-xl font-black flex items-center gap-4 text-right"><i class="fas fa-network-wired text-ariel-green text-3xl"></i> סימולטור FPTAS להקצאה מבוזרת</h3>
+                    <div class="flex items-center gap-10 bg-slate-800/40 p-5 rounded-3xl border border-slate-700">
+                        <div class="text-center">
+                            <div class="text-[10px] text-slate-500 uppercase font-black mb-1">רווח מצטבר ($)</div>
+                            <div class="text-4xl font-black text-white">$<span id="factory-total-profit">0</span>K</div>
+                        </div>
+                        <button onclick="runFactoryScheduling()" id="factory-run-btn" class="bg-ariel-green hover:bg-green-600 text-white font-black py-4 px-12 rounded-2xl transition-all shadow-lg flex items-center gap-3">
+                            <i class="fas fa-play-circle text-xl"></i> בצע אופטימיזציה
+                        </button>
+                    </div>
+                </div>
+                <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+                    <div class="lg:col-span-4 h-[600px] overflow-y-auto custom-scrollbar pr-3" id="factory-jobs-list">
+                        <!-- Jobs injected here -->
+                    </div>
+                    <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 content-start" id="factory-network">
+                        <!-- Factories injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-12 rounded-[2.5rem] shadow-sm border border-slate-200">
+                <h3 class="text-2xl font-black text-ariel-green mb-6 text-right">תקציר המאמר</h3>
+                <div class="space-y-6 text-lg text-slate-700 leading-relaxed text-justify">
+                    <p>המחקר מציע אלגוריתם קירוב (FPTAS) להקצאת משימות בסביבת ייצור מבוזרת. הבעיה מוגדרת כ-NP-hard, והאלגוריתם מאפשר למצוא פתרון הקרוב לאופטימלי בזמן ריצה פולינומי.</p>
+                    <p>המודל שוקל עבור כל משימה את הרווח שלה לעומת המורכבות והדד-ליין, ומחליט האם לייצר במפעל הבית (יעיל אך מוגבל) או להוציא לקבלני משנה (יקר אך מאפשר גמישות).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW: FLOATING -->
+    <div id="view-floating" class="view-section hidden-view">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <button onclick="switchView('home')" class="mb-6 flex items-center text-slate-500 hover:text-ariel-green font-bold"><i class="fas fa-arrow-right ml-2"></i> חזרה לראשי</button>
+            <header class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-ariel-green mb-8 border border-slate-100">
+                <div class="text-right">
+                    <h1 class="text-3xl font-black text-gray-800 mb-2 font-display">שיטת "המטופל הצף" (Floating Patients)</h1>
+                    <p class="text-slate-500 font-medium mb-4 italic">Computers & Industrial Engineering | Int. J. Prod. Econ.</p>
+                </div>
+            </header>
+
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 mb-12">
+                <div class="grid lg:grid-cols-4 gap-6 mb-10 text-right">
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col justify-between">
+                        <h3 class="text-sm font-black text-slate-800 mb-6">ניהול זרימת חולים</h3>
+                        <button onclick="toggleFloatingAuto()" id="floating-auto-btn" class="w-full py-4 rounded-xl bg-ariel-green text-white font-bold shadow-md transition-all">הפעל הזרמת חולים</button>
+                        <div class="mt-4 text-center">
+                            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">טופלו סה"כ</div>
+                            <div class="text-2xl font-black text-slate-800" id="float-total-stats">0</div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 bg-slate-900 p-8 rounded-3xl text-white shadow-xl">
+                        <div class="flex justify-between items-center mb-6"><h3 class="text-xs font-bold uppercase tracking-widest text-slate-400">מדדי עומס מערכתיים</h3></div>
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                                <div class="text-[10px] text-slate-500 mb-2 font-bold uppercase">תפוסה במחלקות</div>
+                                <input type="range" id="float-ward-input" min="0" max="100" value="40" oninput="updateFloatingUI()" class="w-full accent-ariel-green mb-2">
+                                <div class="text-2xl font-black" id="float-ward-val">40%</div>
+                            </div>
+                            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 overflow-hidden">
+                                <div class="text-[10px] text-slate-500 mb-2 font-bold uppercase">יומן אירועים (Log)</div>
+                                <div id="float-logs" class="text-[10px] text-slate-400 leading-tight space-y-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border-2 border-dashed border-slate-200">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase mb-4">תור קבלה (Triage)</h4>
+                        <div id="float-triage-list" class="flex gap-2 flex-wrap"></div>
+                    </div>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="bg-blue-50/30 p-8 rounded-[3rem] border border-blue-100 text-right">
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="font-black text-xl flex items-center gap-3 text-slate-800"><i class="fas fa-hospital-symbol text-blue-500"></i> חדר מיון (מלר"ד)</h3>
+                            <span class="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded-full font-bold" id="float-ed-capacity-text">0/10 מיטות</span>
+                        </div>
+                        <div class="grid grid-cols-5 gap-4" id="float-ed-grid"></div>
+                    </div>
+                    <div class="bg-emerald-50/30 p-8 rounded-[3rem] border border-emerald-100 text-right">
+                        <h3 class="font-black text-xl mb-8 flex items-center gap-3 text-slate-800"><i class="fas fa-bed text-emerald-500"></i> מטופלים ב"ציפה" (מחלקות)</h3>
+                        <div id="float-ward-list" class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW: REVIEW -->
+    <div id="view-review" class="view-section hidden-view">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <button onclick="switchView('home')" class="mb-6 flex items-center text-slate-500 hover:text-ariel-green font-bold"><i class="fas fa-arrow-right ml-2"></i> חזרה לראשי</button>
+            <header class="bg-white p-8 rounded-2xl shadow-sm border-t-4 border-ariel-green mb-8 border border-slate-100">
+                <div class="text-right">
+                    <h1 class="text-3xl font-black text-gray-800 mb-2">ניהול תורים במיון: סקירה שיטתית (2022)</h1>
+                    <p class="text-slate-500 font-medium italic">Operations Research Forum | Springer</p>
+                </div>
+            </header>
+            <div class="bg-white rounded-[2.5rem] p-10 shadow-xl mb-12 border border-slate-100">
+                <h3 class="text-2xl font-black text-slate-800 mb-12 text-right">דשבורד התפתחות מתודולוגית (7 עשורים)</h3>
+                <div class="h-[450px] w-full"><canvas id="reviewTrendChart"></canvas></div>
+                <div class="flex justify-center gap-8 mt-10 text-xs font-bold text-slate-600">
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 bg-slate-800 rounded"></div> מודלים אנליטיים</div>
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 bg-ariel-green rounded"></div> סימולציה (DES)</div>
+                    <div class="flex items-center gap-2"><div class="w-3 h-3 bg-blue-500 rounded"></div> בינה מלאכותית (AI)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-900 text-gray-400 py-16 mt-auto border-t-4 border-ariel-green">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <span class="text-2xl font-black text-white tracking-tighter">ד"ר גיא <span class="text-ariel-green">וכטל</span></span>
+            <div class="flex justify-center gap-8 mt-6">
+                <a href="https://www.linkedin.com/in/guy-wachtel-9a8192a0/" target="_blank" class="hover:text-ariel-green transition-colors">LinkedIn</a>
+                <a href="https://scholar.google.com/citations?user=Y3hTWIMAAAAJ" target="_blank" class="hover:text-ariel-green transition-colors">Google Scholar</a>
+            </div>
+            <p class="text-xs mt-10 opacity-40 italic">© 2025 ד"ר גיא וכטל. כל הזכויות שמורות. אוניברסיטת אריאל.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- SHARED DATA ---
+        const RESEARCH_PAPERS = [
+            { id: 'evacuation', year: '2021', title: 'פינוי תיירים אורבני', desc: 'מסגרת עבודה מקיפה לשיפור תהליכי איסוף נתונים וניהול פינוי תיירים במרחב האורבני.', icon: 'fa-map-marked-alt', img: 'https://images.unsplash.com/photo-1577086664693-894553052523?auto=format&fit=crop&q=80&w=800', kw: ['BFS', 'חוסן עירוני'] },
+            { id: 'drivers', year: '2025', title: 'רווחת נהגי אוטובוס', desc: 'חיזוי סטרס אצל נהגים באמצעות מדדים פיזיולוגיים (HR, EDA) ובינה מלאכותית.', icon: 'fa-heartbeat', img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800', kw: ['ML', 'ניטור סטרס'] },
+            { id: 'review', year: '2022', title: 'ניהול תור במיון: סקירה', desc: 'סקירה שיטתית של 229 מאמרים לאורך 7 עשורים על גישות ניהוליות.', icon: 'fa-book-medical', img: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&q=80&w=800', kw: ['OR', 'סקירה ספרותית'] },
+            { id: 'factory', year: '2020', title: 'תזמון רב-מפעלי', desc: 'אלגוריתם קירוב (FPTAS) להקצאת משימות אופטימלית בין מפעלים לקבלני משנה.', icon: 'fa-industry', img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800', kw: ['FPTAS', 'NP-Hard'] },
+            { id: 'floating', year: '2015-2017', title: 'שיטת "המטופל הצף"', desc: 'מודל מתמטי לאיזון עומסים במיון באמצעות העברת חולים למחלקות לפני פינוי מיטה.', icon: 'fa-procedures', img: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800', kw: ['Bed Management', 'Optimization'] }
+        ];
+
+        // --- NAVIGATION ---
+        function switchView(view) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden-view'));
+            const target = document.getElementById(`view-${view}`);
+            target.classList.remove('hidden-view');
+            target.classList.add('fade-in-up');
+            window.scrollTo(0, 0);
+
+            const navBtn = document.getElementById('nav-home-btn');
+            if (view === 'home') navBtn.classList.add('text-ariel-green');
+            else navBtn.classList.remove('text-ariel-green');
+
+            // Init specific charts/sims
+            if (view === 'evacuation') resetEvacSim();
+            if (view === 'drivers') initDriverSim();
+            if (view === 'factory') initFactorySim();
+            if (view === 'floating') initFloatingSim();
+            if (view === 'review') initReviewTrendChart();
+        }
+
+        // --- HOME PAGE CARDS ---
+        function initHome() {
+            const grid = document.getElementById('papers-grid');
+            grid.innerHTML = RESEARCH_PAPERS.map(p => `
+                <article onclick="switchView('${p.id}')" class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl card-hover border border-slate-200 group cursor-pointer w-full md:w-[calc(50%-2rem)] lg:w-[calc(33.33%-2rem)] flex flex-col">
+                    <div class="h-48 bg-slate-800 relative overflow-hidden shrink-0">
+                        <img src="${p.img}" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-r from-gray-900/60 to-transparent"></div>
+                        <div class="absolute bottom-4 right-4 bg-ariel-green text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg z-10">${p.year}</div>
+                        <div class="absolute inset-0 flex items-center justify-center z-10"><i class="fas ${p.icon} text-5xl text-white/90 drop-shadow-lg floating-icon"></i></div>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow text-right">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-ariel-green transition-colors">${p.title}</h3>
+                        <p class="text-slate-600 text-sm mb-4 line-clamp-3">${p.desc}</p>
+                        <div class="mt-auto flex flex-wrap gap-2 pt-2">
+                            ${p.kw.map(k => `<span class="bg-slate-100 border border-slate-200 text-slate-700 px-2 py-1 rounded text-[10px] font-semibold">${k}</span>`).join('')}
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['חקר ביצועים', 'סימולציה', 'Machine Learning', 'מערכות בריאות', 'תחבורה', 'אלגוריתמים'],
+                    datasets: [{
+                        label: 'Expertise',
+                        data: [98, 92, 95, 96, 88, 94],
+                        backgroundColor: 'rgba(144, 192, 48, 0.2)',
+                        borderColor: '#90C030',
+                        pointBackgroundColor: '#1a1a1a',
+                        borderWidth: 2
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestMin: 50, suggestMax: 100, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        // --- EVACUATION SIMULATOR (BFS + AGENTS) ---
+        let evacInterval, evacAgents = [], evacPolice = [], isEvacAlarm = false, isPlacingPolice = false, evacSteps = 0, distMap = null;
+        const GRID_SIZE = 20;
+
+        function resetEvacSim() {
+            clearInterval(evacInterval);
+            evacAgents = []; evacPolice = []; isEvacAlarm = false; evacSteps = 0;
+            document.getElementById('evac-count').innerText = '0';
+            document.getElementById('evac-steps').innerText = '0';
+            document.getElementById('police-count').innerText = '0';
+            document.getElementById('evac-status-text').innerText = 'שיטוט רגיל';
+            initEvacGrid();
+            startEvacLoop();
+        }
+
+        function initEvacGrid() {
+            const grid = document.getElementById('evac-grid');
+            grid.innerHTML = '';
+            const tempGrid = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill('empty'));
+            
+            for(let y=0; y<GRID_SIZE; y++) {
+                for(let x=0; x<GRID_SIZE; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'evac-cell';
+                    cell.id = `cell-${x}-${y}`;
+                    cell.onclick = () => handleCellClick(x, y);
+                    
+                    if((x===2 && y>2 && y<18) || (x===17 && y>2 && y<18) || (y===2 && x>2 && x<17) || (y===17 && x>2 && x<17) ||
+                       (x===6 && y>6 && y<14) || (x===13 && y>6 && y<14) || (y===6 && x>6 && x<13) || (y===13 && x>6 && x<13)) {
+                        if(!((x===10 && (y===2 || y===17)) || (y===10 && (x===2 || x===17)) || (x===10 && (y===6 || y===13)))) {
+                            cell.classList.add('cell-wall'); tempGrid[y][x] = 'wall';
+                        }
+                    }
+                    if(x === GRID_SIZE-1 && y === 0) { cell.classList.add('cell-safe'); cell.innerHTML = '<i class="fas fa-door-open text-white text-[8px]"></i>'; tempGrid[y][x] = 'safe'; }
+                    grid.appendChild(cell);
+                }
+            }
+            // Precompute Distance Map (BFS)
+            distMap = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(Infinity));
+            const queue = [[GRID_SIZE-1, 0, 0]]; distMap[0][GRID_SIZE-1] = 0;
+            while(queue.length > 0) {
+                const [cx, cy, d] = queue.shift();
+                [[0,1],[0,-1],[1,0],[-1,0]].forEach(([dx,dy]) => {
+                    const nx = cx+dx, ny = cy+dy;
+                    if(nx>=0 && nx<GRID_SIZE && ny>=0 && ny<GRID_SIZE && tempGrid[ny][nx] !== 'wall' && distMap[ny][nx] === Infinity) {
+                        distMap[ny][nx] = d + 1;
+                        queue.push([nx, ny, d+1]);
+                    }
+                });
+            }
+
+            for(let i=0; i<30; i++) {
+                let rx, ry;
+                do { rx = Math.floor(Math.random()*GRID_SIZE); ry = Math.floor(Math.random()*GRID_SIZE); } 
+                while(tempGrid[ry][rx] !== 'empty');
+                const dot = document.createElement('div');
+                dot.className = 'tourist-dot bg-blue-500';
+                dot.id = `agent-${i}`;
+                document.getElementById(`cell-${rx}-${ry}`).appendChild(dot);
+                evacAgents.push({ id: i, x: rx, y: ry, isSmart: false, escaped: false });
+            }
+        }
+
+        function togglePolicePlacing() { isPlacingPolice = !isPlacingPolice; document.getElementById('btn-police').classList.toggle('bg-blue-600', isPlacingPolice); }
+
+        function handleCellClick(x, y) {
+            if(!isPlacingPolice || evacPolice.length >= 2) return;
+            const cell = document.getElementById(`cell-${x}-${y}`);
+            if(cell.classList.contains('cell-wall') || cell.classList.contains('cell-safe')) return;
+            cell.classList.add('cell-police');
+            cell.innerHTML = '<i class="fas fa-user-shield"></i>';
+            evacPolice.push({x, y});
+            document.getElementById('police-count').innerText = evacPolice.length;
+        }
+
+        function triggerEvacAlarm() { 
+            isEvacAlarm = true; 
+            document.getElementById('evac-status-text').innerText = 'מצב חירום!';
+            document.getElementById('evac-status-text').classList.add('text-red-500', 'animate-pulse');
+        }
+
+        function startEvacLoop() {
+            evacInterval = setInterval(() => {
+                const escapedCount = evacAgents.filter(a => a.escaped).length;
+                if(escapedCount === 30) { clearInterval(evacInterval); return; }
+                if(isEvacAlarm) { evacSteps++; document.getElementById('evac-steps').innerText = evacSteps; }
+
+                evacAgents.forEach(a => {
+                    if(a.escaped) return;
+                    const dot = document.getElementById(`agent-${a.id}`);
+                    
+                    if(isEvacAlarm) {
+                        if(!a.isSmart) {
+                            const nearPolice = evacPolice.some(p => Math.abs(p.x-a.x) <=1 && Math.abs(p.y-a.y) <=1);
+                            const nearSmart = evacAgents.some(other => other.isSmart && !other.escaped && Math.abs(other.x-a.x) <=1 && Math.abs(other.y-a.y) <=1);
+                            if(nearPolice || nearSmart) { a.isSmart = true; dot.classList.add('smart'); dot.classList.remove('panic'); }
+                            else { dot.classList.add('panic'); }
+                        }
+                    }
+
+                    let dx=0, dy=0;
+                    if(!isEvacAlarm) {
+                        if(Math.random() > 0.8) { dx = Math.floor(Math.random()*3)-1; dy = Math.floor(Math.random()*3)-1; }
+                    } else {
+                        if(a.isSmart) {
+                            let best = {d: Infinity, dx:0, dy:0};
+                            [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]].forEach(([ox,oy]) => {
+                                const nx = a.x+ox, ny = a.y+oy;
+                                if(nx>=0 && nx<GRID_SIZE && ny>=0 && ny<GRID_SIZE && distMap[ny][nx] < best.d) {
+                                    best = {d: distMap[ny][nx], dx:ox, dy:oy};
+                                }
+                            });
+                            dx = best.dx; dy = best.dy;
+                        } else {
+                            if(Math.random() > 0.4) {
+                                if(a.x < GRID_SIZE-1) dx = 1; else if(a.y > 0) dy = -1;
+                            } else { dx = Math.floor(Math.random()*3)-1; dy = Math.floor(Math.random()*3)-1; }
+                        }
+                    }
+
+                    const nx = Math.max(0, Math.min(GRID_SIZE-1, a.x+dx));
+                    const ny = Math.max(0, Math.min(GRID_SIZE-1, a.y+dy));
+                    const targetCell = document.getElementById(`cell-${nx}-${ny}`);
+                    if(!targetCell.classList.contains('cell-wall')) {
+                        a.x = nx; a.y = ny;
+                        targetCell.appendChild(dot);
+                        if(targetCell.classList.contains('cell-safe')) {
+                            a.escaped = true; dot.style.display = 'none';
+                            document.getElementById('evac-count').innerText = evacAgents.filter(a => a.escaped).length;
+                        }
+                    }
+                });
+            }, 300);
+        }
+
+        // --- DRIVER SIM ---
+        let driverChart;
+        function initDriverSim() {
+            const ctx = document.getElementById('driverChart').getContext('2d');
+            if(driverChart) driverChart.destroy();
+            driverChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: Array(30).fill(''), datasets: [{ label: 'HR', data: Array(30).fill(72), borderColor: '#90C030', tension: 0.4, borderWidth: 3, pointRadius: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 60, max: 140, ticks: { display: false } }, x: { display: false } }, plugins: { legend: { display: false } } }
+            });
+            updateDriverSim();
+        }
+
+        function updateDriverSim() {
+            const delay = parseInt(document.getElementById('input-delay').value);
+            const load = parseInt(document.getElementById('input-load').value);
+            document.getElementById('val-delay').innerText = delay + 'm';
+            document.getElementById('val-load').innerText = load + '%';
+
+            const stress = (delay * 0.8) + (load * 0.2);
+            const bpm = Math.floor(70 + stress * 0.6);
+            const eda = (0.5 + stress * 0.06).toFixed(2);
+            const satisf = Math.max(20, 100 - stress).toFixed(0);
+
+            document.getElementById('driver-bpm').innerText = bpm;
+            document.getElementById('driver-eda').innerText = eda;
+            document.getElementById('driver-satisfaction').innerText = satisf + '%';
+
+            const alertText = document.getElementById('driver-alert-text');
+            const alertBox = document.getElementById('driver-alert');
+            const alertCircle = document.getElementById('driver-alert-circle');
+            if(stress > 65) {
+                alertText.innerText = 'עומס קריטי: נדרשת הפסקה מיידית!';
+                alertBox.className = 'p-6 rounded-2xl border border-red-500 bg-red-950/20 flex items-center gap-6 animate-pulse text-right';
+                alertCircle.className = 'w-16 h-16 rounded-full flex items-center justify-center text-3xl bg-red-900 text-white';
+                document.getElementById('driver-alert-icon').className = 'fas fa-exclamation-triangle';
+            } else {
+                alertText.innerText = 'סטטוס תקין: מדדים בטווח הנורמה';
+                alertBox.className = 'p-6 rounded-2xl border border-ariel-green bg-slate-950/40 flex items-center gap-6 text-right';
+                alertCircle.className = 'w-16 h-16 rounded-full flex items-center justify-center text-3xl bg-slate-900 text-ariel-green';
+                document.getElementById('driver-alert-icon').className = 'fas fa-check-circle';
+            }
+            if(driverChart) {
+                driverChart.data.datasets[0].data.push(bpm);
+                driverChart.data.datasets[0].data.shift();
+                driverChart.update('none');
+            }
+        }
+
+        // --- FACTORY SIM (FPTAS) ---
+        let factoryJobs = [], factoryList = [
+            { id: 'f1', name: 'מפעל ראשי', type: 'high', icon: 'fa-industry', cap: 120, load: 0 },
+            { id: 'f2', name: 'קבלן א\'', type: 'med', icon: 'fa-warehouse', cap: 80, load: 0 },
+            { id: 'f3', name: 'קבלן ב\'', type: 'med', icon: 'fa-warehouse', cap: 80, load: 0 },
+            { id: 'f4', name: 'קבלן ג\'', type: 'low', icon: 'fa-tools', cap: 60, load: 0 }
+        ];
+
+        function initFactorySim() {
+            factoryJobs = Array(10).fill(0).map((_, i) => ({ id: i+1, complexity: Math.random()*0.8+0.1, profit: Math.floor(Math.random()*40)+15, due: Math.floor(Math.random()*50)+25, status: 'pending' }));
+            renderFactory();
+        }
+
+        function renderFactory() {
+            document.getElementById('factory-jobs-list').innerHTML = factoryJobs.map(j => `
+                <div class="bg-slate-800 p-4 rounded-2xl mb-2 border ${j.status==='main'?'border-ariel-green':j.status==='sub'?'border-blue-500':j.status==='late'?'border-red-500':'border-slate-700'} text-right">
+                    <div class="flex justify-between text-[10px] font-black uppercase mb-2">
+                        <span>Project #${j.id}</span>
+                        <span class="${j.status==='main'?'text-ariel-green':j.status==='sub'?'text-blue-500':j.status==='late'?'text-red-500':'text-slate-500'}">${j.status}</span>
+                    </div>
+                    <div class="text-sm font-bold">$${j.profit}K | ${(j.complexity*100).toFixed(0)}% Comp | ${j.due}h Due</div>
+                </div>
+            `).join('');
+            document.getElementById('factory-network').innerHTML = factoryList.map(f => `
+                <div class="bg-slate-800/40 p-6 rounded-3xl border border-slate-700 text-right">
+                    <div class="flex justify-between mb-4">
+                        <div class="flex items-center gap-4"><i class="fas ${f.icon} text-ariel-green"></i><div class="text-sm font-bold text-white">${f.name}</div></div>
+                        <div class="font-mono text-xs text-slate-300">${f.load.toFixed(1)} / ${f.cap}h</div>
+                    </div>
+                    <div class="h-2 w-full bg-slate-900 rounded-full overflow-hidden"><div class="h-full bg-ariel-green transition-all duration-1000" style="width: ${Math.min(100, (f.load/f.cap)*100)}%"></div></div>
+                </div>
+            `).join('');
+        }
+
+        async function runFactoryScheduling() {
+            const btn = document.getElementById('factory-run-btn');
+            btn.disabled = true; btn.innerHTML = '<i class="fas fa-sync animate-spin"></i> רץ...';
+            let totalProfit = 0; factoryList.forEach(f => f.load = 0);
+            for(let j of factoryJobs) {
+                await new Promise(r => setTimeout(r, 400));
+                const time = 8 + (j.complexity * 25);
+                if(factoryList[0].load + time <= j.due) { factoryList[0].load += time; j.status = 'main'; totalProfit += j.profit; }
+                else {
+                    const sub = factoryList.slice(1).sort((a,b) => a.load - b.load)[0];
+                    if(sub.load + time*1.4 <= j.due) { sub.load += time*1.4; j.status = 'sub'; totalProfit += j.profit * 0.7; }
+                    else { j.status = 'late'; }
+                }
+                document.getElementById('factory-total-profit').innerText = totalProfit.toFixed(1);
+                renderFactory();
+            }
+            btn.disabled = false; btn.innerHTML = '<i class="fas fa-play-circle text-xl"></i> בצע אופטימיזציה';
+        }
+
+        // --- FLOATING PATIENTS ---
+        let floatPatients = [], floatStats = { total: 0, ed: 0, floated: 0 }, floatAuto = null;
+
+        function initFloatingSim() { floatPatients = []; floatStats = { total: 0, ed: 0, floated: 0 }; updateFloatingUI(); }
+        function toggleFloatingAuto() {
+            const btn = document.getElementById('floating-auto-btn');
+            if(floatAuto) { clearInterval(floatAuto); floatAuto = null; btn.innerText = 'הפעל הזרמת חולים'; }
+            else { floatAuto = setInterval(addFloatPatient, 2500); btn.innerText = 'עצור הזרמה'; }
+        }
+        function addFloatPatient() {
+            const names = ['דוד', 'שרה', 'משה', 'רחל', 'יעקב', 'לאה', 'בנימין', 'חנה', 'מאיר', 'רות'];
+            floatPatients.push({ id: Math.random(), name: names[Math.floor(Math.random()*names.length)], severity: Math.floor(Math.random()*5)+1, status: 'triage', time: 30 + Math.random()*20 });
+            processFloatTriage(); updateFloatingUI();
+        }
+        function processFloatTriage() {
+            const triage = floatPatients.filter(p => p.status === 'triage');
+            if(!triage.length) return;
+            const p = triage[0], edCount = floatPatients.filter(p => p.status === 'ed').length, wardOcc = parseInt(document.getElementById('float-ward-input').value);
+            if(edCount < 10) { p.status = 'ed'; floatStats.ed++; }
+            else if(wardOcc < 95) { p.status = 'ward'; floatStats.floated++; addFloatLog(`ציפה: ${p.name} הועבר/ה למחלקה`); }
+            floatStats.total++; document.getElementById('float-total-stats').innerText = floatStats.total;
+        }
+        function addFloatLog(m) { const l = document.getElementById('float-logs'); l.innerHTML = `<div class="text-white">${m}</div>` + l.innerHTML; }
+        function updateFloatingUI() {
+            document.getElementById('float-ward-val').innerText = document.getElementById('float-ward-input').value + '%';
+            document.getElementById('float-triage-list').innerHTML = floatPatients.filter(p=>p.status==='triage').map(p => `<div class="w-10 h-10 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-[10px] font-bold shadow-sm">${p.name}</div>`).join('');
+            document.getElementById('float-ed-grid').innerHTML = Array(10).fill(0).map((_,i) => {
+                const p = floatPatients.filter(p=>p.status==='ed')[i];
+                if(p) return `<div class="aspect-square bg-blue-50 border border-blue-100 rounded-2xl flex flex-col items-center justify-center p-2"><i class="fas fa-procedures text-blue-400 text-sm mb-1"></i><div class="text-[9px] font-bold">${p.name}</div></div>`;
+                return `<div class="aspect-square bg-slate-50 border border-slate-100 border-dashed rounded-2xl flex items-center justify-center text-[10px] text-slate-200">${i+1}</div>`;
+            }).join('');
+            document.getElementById('float-ward-list').innerHTML = floatPatients.filter(p=>p.status==='ward').map(p => `<div class="bg-white p-3 rounded-xl border border-emerald-100 flex justify-between items-center text-xs font-bold"><span>${p.name}</span><span class="text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-full">מטופל צף</span></div>`).join('');
+            document.getElementById('float-ed-capacity-text').innerText = `${floatPatients.filter(p=>p.status==='ed').length}/10 מיטות`;
+        }
+
+        // --- REVIEW TREND CHART ---
+        function initReviewTrendChart() {
+            const ctx = document.getElementById('reviewTrendChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1980s', '1990s', '2000s', '2010s', '2020s+'],
+                    datasets: [
+                        { label: 'מודלים אנליטיים', data: [85, 45, 25, 12, 5], borderColor: '#1e293b', tension: 0.3, borderWidth: 4 },
+                        { label: 'סימולציה', data: [15, 55, 65, 45, 20], borderColor: '#90C030', tension: 0.3, borderWidth: 4 },
+                        { label: 'AI & Machine Learning', data: [0, 0, 10, 43, 75], borderColor: '#3b82f6', tension: 0.3, borderWidth: 4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        window.onload = () => { initHome(); };
+    </script>
+</body>
+</html>
