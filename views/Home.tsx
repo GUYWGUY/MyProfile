@@ -1,10 +1,10 @@
 
 import React from 'react';
-// Fix: Removed duplicate Radar identifier from the import statement to resolve "Duplicate identifier" error
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
 import { RESEARCH_PAPERS } from '../constants';
 import { ProjectCard } from '../components/ProjectCard';
 import { ViewType } from '../types';
+import profileImg from '../profile.jpg';
 
 const skillsData = [
   { subject: 'חקר ביצועים', A: 98 },
@@ -30,7 +30,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               <div className="bg-white p-2 rounded-2xl shadow-xl border border-slate-100">
                 <div className="aspect-[3/4] bg-slate-100 rounded-xl overflow-hidden relative group flex items-center justify-center">
                   <img 
-                    src="profile.jpg" 
+                    src={profileImg} 
                     alt="ד״ר גיא וכטל" 
                     className="w-full h-full object-cover"
                     onError={(e) => {
