@@ -29,14 +29,21 @@ const App: React.FC = () => {
                 <span className="text-[11px] text-slate-500 font-bold mt-1">ותהליכי למידה מבוססי ידע</span>
               </Link>
               <div className="hidden md:block h-8 w-px bg-slate-200 mx-2"></div>
-              <div className="hidden md:block text-sm text-ariel-blue/80 font-medium">אוניברסיטת אריאל</div>
+              <a 
+                href="https://www.ariel.ac.il/wp/faculty-gate/" 
+                target="_blank" 
+                rel="noreferrer"
+                className="hidden md:block text-sm text-ariel-blue/80 font-medium hover:text-ariel-turquoise transition-colors"
+              >
+                אוניברסיטת אריאל
+              </a>
             </div>
             <div className="flex items-center gap-4">
               <Link 
                 to="/management" 
                 className={`font-bold transition-colors px-3 py-2 flex items-center gap-2 ${currentPath === '/management' ? 'text-ariel-turquoise' : 'text-ariel-blue hover:text-ariel-turquoise'}`}
               >
-                <i className="fas fa-user-tie"></i> ראש המעבדה
+                <i className="fas fa-user-tie"></i> ד"ר גיא וכטל
               </Link>
               <Link 
                 to="/" 
@@ -67,7 +74,7 @@ const App: React.FC = () => {
           <div className="flex flex-col items-center gap-4 mb-8">
             <span className="text-xl font-black text-white tracking-tighter">המעבדה <span className="text-ariel-turquoise">לקבלת החלטות</span> ותהליכי למידה מבוססי ידע</span>
             <div className="flex gap-6">
-              <Link to="/management" className="hover:text-ariel-turquoise transition-colors">אודות ראש המעבדה</Link>
+              <Link to="/management" className="hover:text-ariel-turquoise transition-colors">ד"ר גיא וכטל</Link>
               <a href="https://www.linkedin.com/in/guy-wachtel-9a8192a0/" target="_blank" rel="noreferrer" className="hover:text-ariel-turquoise transition-colors">LinkedIn</a>
             </div>
           </div>
