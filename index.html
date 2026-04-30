@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ד"ר גיא וכטל | פורטל מחקר</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+      window.tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              ariel: {
+                turquoise: '#008C95',
+                'turquoise-dark': '#006F76',
+                blue: '#002D56',
+                dark: '#001a33',
+                gray: '#f3f4f6'
+              }
+            },
+            fontFamily: {
+              sans: ['Rubik', 'sans-serif'],
+              display: ['Heebo', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body { background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
+      .ariel-dark-gradient { background: linear-gradient(135deg, #002D56 0%, #001a33 100%); }
+      .card-hover { transition: all 0.3s ease; }
+      .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+      
+      @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+      .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      
+      @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+      .floating-icon { animation: float 4s ease-in-out infinite; }
+      
+      @keyframes heartbeat { 
+        0% { transform: scale(1); } 
+        14% { transform: scale(1.15); } 
+        28% { transform: scale(1); } 
+        42% { transform: scale(1.15); } 
+        70% { transform: scale(1); } 
+      }
+      .heartbeat-anim { animation: heartbeat 0.8s infinite; }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #f1f1f1; }
+      ::-webkit-scrollbar-thumb { background: #008C95; border-radius: 4px; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.0.0",
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
