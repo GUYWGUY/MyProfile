@@ -26,9 +26,6 @@ export const Home: React.FC = () => {
             <span className="text-ariel-turquoise">ותהליכי למידה מבוססי ידע</span>
           </h1>
           <div className="flex flex-col items-center gap-4">
-            <p className="text-xl text-white/90 font-medium max-w-2xl mx-auto leading-relaxed">
-              פיתוח מודלים מתמטיים ואלגוריתמיים לשיפור תהליכי קבלת החלטות במערכות מורכבות, תוך דגש על חדשנות טכנולוגית ולמידה חכמה.
-            </p>
             <Link 
               to="/management" 
               className="mt-6 inline-flex items-center gap-2 bg-ariel-turquoise text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-ariel-turquoise-dark transition-all transform hover:-translate-y-1"
@@ -45,7 +42,7 @@ export const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 text-lg text-slate-600 leading-relaxed text-justify">
               <p>
-                המעבדה לקבלת החלטות ותהליכי למידה מבוססי ידע באוניברסיטת אריאל מהווה מוקד למחקר רב-תחומי המשלב חקר ביצועים, אופטימיזציה ובינה מלאכותית. אנו מתמקדים בפיתוח כלים תומכי החלטה המסייעים לארגונים ולמערכות ציבוריות להתמודד עם אתגרי המאה ה-21.
+                המעבדה לקבלת החלטות ותהליכי למידה מבוססי ידע באוניברסיטת אריאל מהווה מוקד למחקר רב-תחומי המשלב חקר ביצועים, אופטימיזציה ובינה מלאכותית. אנו מתמקדים ב<strong>פיתוח מודלים מתמטיים ואלגוריתמיים מתקדמים</strong> לשיפור תהליכי קבלת החלטות במערכות מורכבות, תוך דגש על חדשנות טכנולוגית ולמידה חכמה.
               </p>
               <p>
                 הכיוון המחקרי הנוכחי של המעבדה מתמקד בשימוש ב<strong>בינה מלאכותית (AI)</strong> ככלי עזר מרכזי ותומך בתהליכי ניהול, עבודה ולמידה. אנו חוקרים כיצד מודלים של למידת מכונה ועיבוד שפה טבעית יכולים להשתלב בסימולציות מורכבות כדי לספק תובנות מדויקות ופרסונליזציה של תהליכי הכשרה וביצוע.
