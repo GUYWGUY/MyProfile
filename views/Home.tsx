@@ -18,103 +18,88 @@ const skillsData = [
 export const Home: React.FC = () => {
   return (
     <div className="fade-in-up">
-      <header className="bg-white relative overflow-hidden pb-12">
-        <div className="absolute top-0 left-0 w-full h-32 ariel-dark-gradient z-0"></div>
-        <div className="max-w-6xl mx-auto px-4 relative z-10 pt-16">
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="w-full md:w-1/3 -mt-4">
-              <div className="bg-white p-2 rounded-2xl shadow-xl border border-slate-100">
-                <div className="aspect-[3/4] bg-slate-100 rounded-xl overflow-hidden relative group flex items-center justify-center">
-                  <img 
-                    src={profileImg} 
-                    alt="ד״ר גיא וכטל" 
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Guy+Wachtel&background=002D56&color=fff&size=512";
-                    }}
-                  />
-                  <div className="absolute bottom-0 w-full bg-gradient-to-t from-ariel-blue/90 to-transparent p-5 pt-12">
-                    <h2 className="text-white text-2xl font-bold">ד"ר גיא וכטל</h2>
-                    <p className="text-ariel-turquoise font-medium text-sm">חוקר ומרצה</p>
-                  </div>
-                </div>
-                <div className="p-5 space-y-4">
-                  <div className="flex items-center text-ariel-blue text-sm hover:text-ariel-turquoise transition-colors">
-                    <div className="w-8 h-8 rounded-full bg-ariel-turquoise flex items-center justify-center text-white ml-3">
-                      <i className="fas fa-envelope"></i>
-                    </div>
-                    <span className="font-medium">GuyW@ariel.ac.il</span>
-                  </div>
-                  <div className="flex justify-center gap-4 pt-2 border-t border-slate-100 mt-2">
-                    <a href="https://www.linkedin.com/in/guy-wachtel-9a8192a0/" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-ariel-turquoise text-xl">
-                      <i className="fab fa-linkedin"></i>
-                    </a>
-                    <a href="https://scholar.google.com/citations?user=Y3hTWIMAAAAJ&hl=en&oi=ao" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-ariel-turquoise text-xl">
-                      <i className="fas fa-graduation-cap"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="w-full md:w-2/3 mt-4 md:mt-20">
-              <h1 className="text-4xl font-black text-ariel-blue mb-6 font-display leading-tight">
-                חקר ביצועים, אלגוריתמים <br/><span className="text-ariel-turquoise">ומה שביניהם</span>
-              </h1>
-              <div className="space-y-6 text-lg text-slate-600 leading-relaxed mb-8 text-justify">
-                <p>
-                  ד"ר גיא וכטל הוא מרצה וחוקר במחלקה להנדסת תעשייה וניהול באוניברסיטת אריאל. את הכשרתו האקדמית רכש באוניברסיטת בר-אילן, שם השלים דוקטורט בניהול (2018) עם התמחות בחקר ביצועים ופיתוח אלגוריתמי קירוב ליישומים במערכות לוגיסטיקה ושירותים. לאחר מכן, המשיך למחקר פוסט-דוקטורט במעבדת LCOMS באוניברסיטת לוריין (צרפת), שם התמקד בתכנון אלגוריתמים מתקדמים לפתרון בעיות תזמון ואמינות מורכבות (NP-hard).
-                </p>
-                <p>
-                  מחקרו של ד"ר וכטל מתמקד בשימוש בכלים מתמטיים לפתרון בעיות תפעוליות מגוונות. הוא מתמחה בפיתוח אלגוריתמי קירוב לייעול מערכות בתעשייה ובשירותים, כגון ניהול עומסים בבתי חולים באמצעות שיטת "המטופל הצף", תכנון מסלולי פינוי תיירים במצבי חירום, ואופטימיזציה של תזמון משימות ברשתות ייצור מבוזרות. עבודותיו פורסמו בכתבי עת מדעיים מובילים בתחומו והוא מציג את מחקריו באופן קבוע בכנסים בינלאומיים מרכזיים.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
-                <h3 className="text-lg font-bold text-ariel-blue mb-4 border-r-4 border-ariel-turquoise pr-3">תחומי עניין ומחקר</h3>
-                <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={skillsData}>
-                      <PolarGrid />
-                      <PolarAngleAxis dataKey="subject" />
-                      <Radar
-                        name="Expertise"
-                        dataKey="A"
-                        stroke="#009639"
-                        fill="#009639"
-                        fillOpacity={0.6}
-                      />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
+      <header className="bg-white relative overflow-hidden pb-20">
+        <div className="absolute top-0 left-0 w-full h-64 ariel-dark-gradient z-0"></div>
+        <div className="max-w-6xl mx-auto px-4 relative z-10 pt-24 text-center">
+          <h1 className="text-5xl md:text-6xl font-black text-white mb-8 font-display leading-[1.1] drop-shadow-lg">
+            המעבדה לקבלת החלטות <br/>
+            <span className="text-ariel-turquoise">ותהליכי למידה מבוססי ידע</span>
+          </h1>
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-xl text-white/90 font-medium max-w-2xl mx-auto leading-relaxed">
+              פיתוח מודלים מתמטיים ואלגוריתמיים לשיפור תהליכי קבלת החלטות במערכות מורכבות, תוך דגש על חדשנות טכנולוגית ולמידה חכמה.
+            </p>
+            <Link 
+              to="/management" 
+              className="mt-6 inline-flex items-center gap-2 bg-ariel-turquoise text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-ariel-turquoise-dark transition-all transform hover:-translate-y-1"
+            >
+              <i className="fas fa-user-tie"></i> בניהולו של ד"ר גיא וכטל
+            </Link>
           </div>
         </div>
       </header>
 
-      <section className="bg-ariel-blue text-white py-16 -mt-8 relative z-0">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl font-black mb-10 border-r-4 border-ariel-turquoise pr-4 flex items-center gap-3">
-            <i className="fas fa-binoculars text-ariel-turquoise"></i> מבט לעתיד: מחקרים בהתהוות
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors backdrop-blur-sm">
-              <div className="text-ariel-turquoise text-4xl mb-4"><i className="fas fa-route"></i></div>
-              <h3 className="text-xl font-bold mb-3">ניתוב חכם (Smart Routing)</h3>
-              <p className="text-gray-300 leading-relaxed text-justify">פיתוח אלגוריתמים המשלבים נתוני זמן אמת וחיזוי עתידי כדי לנתב משאבים בצורה אופטימלית.</p>
+      <section className="max-w-5xl mx-auto px-4 py-16 -mt-10 relative z-10">
+        <div className="bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-100">
+          <h2 className="text-3xl font-black text-ariel-blue mb-8 border-r-4 border-ariel-turquoise pr-4">חזון ופעילות המעבדה</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6 text-lg text-slate-600 leading-relaxed text-justify">
+              <p>
+                המעבדה לקבלת החלטות ותהליכי למידה מבוססי ידע באוניברסיטת אריאל מהווה מוקד למחקר רב-תחומי המשלב חקר ביצועים, אופטימיזציה ובינה מלאכותית. אנו מתמקדים בפיתוח כלים תומכי החלטה המסייעים לארגונים ולמערכות ציבוריות להתמודד עם אתגרי המאה ה-21.
+              </p>
+              <p>
+                הכיוון המחקרי הנוכחי של המעבדה מתמקד בשימוש ב<strong>בינה מלאכותית (AI)</strong> ככלי עזר מרכזי ותומך בתהליכי ניהול, עבודה ולמידה. אנו חוקרים כיצד מודלים של למידת מכונה ועיבוד שפה טבעית יכולים להשתלב בסימולציות מורכבות כדי לספק תובנות מדויקות ופרסונליזציה של תהליכי הכשרה וביצוע.
+              </p>
             </div>
-            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors backdrop-blur-sm">
-              <div className="text-ariel-turquoise text-4xl mb-4"><i className="fas fa-brain"></i></div>
-              <h3 className="text-xl font-bold mb-3">בינה מלאכותית בלמידה</h3>
-              <p className="text-gray-300 leading-relaxed text-justify">שימוש במודלים מתקדמים של עיבוד שפה טבעית (NLP) ובינה מלאכותית יוצרת (Generative AI) לצורך התאמה אישית של תהליכי למידה.</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center text-center group hover:bg-ariel-turquoise/5 transition-colors">
+                <i className="fas fa-microchip text-ariel-turquoise text-3xl mb-3"></i>
+                <span className="font-bold text-ariel-blue">AI & ML</span>
+              </div>
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center text-center group hover:bg-ariel-turquoise/5 transition-colors">
+                <i className="fas fa-chart-line text-ariel-turquoise text-3xl mb-3"></i>
+                <span className="font-bold text-ariel-blue">Optimization</span>
+              </div>
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center text-center group hover:bg-ariel-turquoise/5 transition-colors">
+                <i className="fas fa-project-diagram text-ariel-turquoise text-3xl mb-3"></i>
+                <span className="font-bold text-ariel-blue">OR Models</span>
+              </div>
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center text-center group hover:bg-ariel-turquoise/5 transition-colors">
+                <i className="fas fa-graduation-cap text-ariel-turquoise text-3xl mb-3"></i>
+                <span className="font-bold text-ariel-blue">Smart Learning</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 py-16 bg-slate-50 rounded-t-[3rem] -mt-8 relative z-10">
-        <h2 className="text-3xl font-black text-ariel-blue mb-10 flex items-center">
-          <i className="fas fa-flask text-ariel-turquoise ml-3"></i> פרסומים נבחרים וסימולציות
-        </h2>
+      <section className="bg-ariel-blue text-white py-20 relative z-0">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-black mb-12 border-r-4 border-ariel-turquoise pr-4 flex items-center gap-3">
+            <i className="fas fa-spinner text-ariel-turquoise animate-spin-slow"></i> מחקרים פעילים ופרויקטים נוכחיים
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors backdrop-blur-sm group">
+              <div className="text-ariel-turquoise text-4xl mb-4 group-hover:scale-110 transition-transform"><i className="fas fa-route"></i></div>
+              <h3 className="text-xl font-bold mb-3">ניתוב חכם ודינמי (Dynamic Routing)</h3>
+              <p className="text-gray-300 leading-relaxed text-justify">פיתוח אלגוריתמים המשלבים נתוני זמן אמת וחיזוי עתידי כדי לנתב משאבים בצורה אופטימלית במערכות לוגיסטיקה עירוניות.</p>
+            </div>
+            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors backdrop-blur-sm group">
+              <div className="text-ariel-turquoise text-4xl mb-4 group-hover:scale-110 transition-transform"><i className="fas fa-brain"></i></div>
+              <h3 className="text-xl font-bold mb-3">בינה מלאכותית בחינוך טכנולוגי</h3>
+              <p className="text-gray-300 leading-relaxed text-justify">שימוש במודלים מתקדמים של NLP ובינה מלאכותית יוצרת (Generative AI) לצורך התאמה אישית של תהליכי למידה והכשרה מקצועית.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 py-20 bg-slate-50 rounded-t-[4rem] -mt-10 relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 px-6">
+          <h2 className="text-3xl font-black text-ariel-blue flex items-center">
+            <i className="fas fa-flask text-ariel-turquoise ml-3"></i> פרסומי המעבדה וסימולציות
+          </h2>
+          <p className="text-slate-500 font-medium max-w-md text-left">סקירה של פרסומים נבחרים המשלבים תיאוריה מתמטית עם יישום מעשי בסימולטורים אינטראקטיביים.</p>
+        </div>
         <div className="flex flex-wrap justify-center gap-8">
           {RESEARCH_PAPERS.map(paper => (
             <ProjectCard 

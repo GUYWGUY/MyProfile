@@ -7,6 +7,7 @@ import { DriversView } from './views/DriversView';
 import { ReviewView } from './views/ReviewView';
 import { FactoryView } from './views/FactoryView';
 import { FloatingView } from './views/FloatingView';
+import { ManagementView } from './views/ManagementView';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -20,17 +21,23 @@ const App: React.FC = () => {
             <div className="flex items-center gap-4">
               <Link 
                 to="/"
-                className="flex flex-col items-start leading-tight group cursor-pointer" 
+                className="flex flex-col items-start leading-none group cursor-pointer" 
               >
-                <span className="text-2xl font-black text-ariel-blue tracking-tighter group-hover:opacity-80 transition-opacity">
-                  אוניברסיטת <span className="text-ariel-turquoise">אריאל</span>
+                <span className="text-xl font-black text-ariel-blue tracking-tighter group-hover:opacity-80 transition-opacity">
+                  המעבדה <span className="text-ariel-turquoise">לקבלת החלטות</span>
                 </span>
-                <span className="text-xs text-slate-500 font-medium tracking-wide">בשומרון</span>
+                <span className="text-[11px] text-slate-500 font-bold mt-1">ותהליכי למידה מבוססי ידע</span>
               </Link>
               <div className="hidden md:block h-8 w-px bg-slate-200 mx-2"></div>
-              <div className="hidden md:block text-sm text-ariel-blue/80 font-medium">המחלקה להנדסת תעשייה וניהול</div>
+              <div className="hidden md:block text-sm text-ariel-blue/80 font-medium">אוניברסיטת אריאל</div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
+              <Link 
+                to="/management" 
+                className={`font-bold transition-colors px-3 py-2 flex items-center gap-2 ${currentPath === '/management' ? 'text-ariel-turquoise' : 'text-ariel-blue hover:text-ariel-turquoise'}`}
+              >
+                <i className="fas fa-user-tie"></i> ראש המעבדה
+              </Link>
               <Link 
                 to="/" 
                 className={`font-bold transition-colors px-3 py-2 flex items-center gap-2 ${currentPath === '/' ? 'text-ariel-turquoise' : 'text-ariel-blue hover:text-ariel-turquoise'}`}
@@ -45,6 +52,7 @@ const App: React.FC = () => {
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/management" element={<ManagementView />} />
           <Route path="/evacuation" element={<EvacuationView />} />
           <Route path="/drivers" element={<DriversView />} />
           <Route path="/review" element={<ReviewView />} />
@@ -57,13 +65,13 @@ const App: React.FC = () => {
       <footer className="bg-ariel-blue text-gray-300 py-12 border-t-4 border-ariel-turquoise">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="flex flex-col items-center gap-4 mb-8">
-            <span className="text-2xl font-black text-white tracking-tighter">ד"ר גיא <span className="text-ariel-turquoise">וכטל</span></span>
+            <span className="text-xl font-black text-white tracking-tighter">המעבדה <span className="text-ariel-turquoise">לקבלת החלטות</span> ותהליכי למידה מבוססי ידע</span>
             <div className="flex gap-6">
+              <Link to="/management" className="hover:text-ariel-turquoise transition-colors">אודות ראש המעבדה</Link>
               <a href="https://www.linkedin.com/in/guy-wachtel-9a8192a0/" target="_blank" rel="noreferrer" className="hover:text-ariel-turquoise transition-colors">LinkedIn</a>
-              <a href="https://scholar.google.com/citations?user=Y3hTWIMAAAAJ&hl=en&oi=ao" target="_blank" rel="noreferrer" className="hover:text-ariel-turquoise transition-colors">Google Scholar</a>
             </div>
           </div>
-          <p className="text-xs opacity-50">© 2025 ד"ר גיא וכטל. כל הזכויות שמורות. המחלקה להנדסת תעשייה וניהול, אוניברסיטת אריאל.</p>
+          <p className="text-xs opacity-50">© 2025 המעבדה לקבלת החלטות ותהליכי למידה מבוססי ידע. בניהולו של ד"ר גיא וכטל. אוניברסיטת אריאל.</p>
         </div>
       </footer>
     </div>
