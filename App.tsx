@@ -30,7 +30,7 @@ const App: React.FC = () => {
               </Link>
               <div className="hidden md:block h-8 w-px bg-slate-200 mx-2"></div>
               <a 
-                href="https://www.ariel.ac.il/wp/faculty-gate/" 
+                href="https://www.ariel.ac.il/wp/iem/" 
                 target="_blank" 
                 rel="noreferrer"
                 className="hidden md:block text-sm text-ariel-blue/80 font-medium hover:text-ariel-turquoise transition-colors"
