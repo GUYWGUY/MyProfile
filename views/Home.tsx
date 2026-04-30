@@ -18,8 +18,8 @@ const skillsData = [
 export const Home: React.FC = () => {
   return (
     <div className="fade-in-up">
-      <header className="bg-white relative overflow-hidden pb-16">
-        <div className="absolute top-0 left-0 w-full h-[320px] ariel-dark-gradient z-0"></div>
+      <header className="bg-white relative overflow-hidden pb-24">
+        <div className="absolute top-0 left-0 w-full h-[360px] ariel-dark-gradient z-0"></div>
         <div className="max-w-6xl mx-auto px-4 relative z-10 pt-24 text-center">
           <h1 className="text-5xl md:text-6xl font-black text-white mb-8 font-display leading-[1.1] drop-shadow-lg">
             המעבדה לקבלת החלטות <br/>
